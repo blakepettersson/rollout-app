@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.port }}
+              protocol: TCP
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 5m
+  strategy:
+    canary:
+      canaryService: {{ .Chart.Name }}-canary
+      stableService: {{ .Chart.Name }}-stable
+      steps:
+        - setWeight: 10
+        - pause: {duration: 20s}         # {} pause indefinitely
+        - setWeight: 20
+        - pause: {duration: 20s}
+        - setWeight: 30
+        - pause: {duration: 20s}
+        - setWeight: 40
+        - pause: {duration: 20s}
+        - setWeight: 50
+        - pause: {duration: 20s}
+        - setWeight: 60
+        - pause: {duration: 20s}
+        - setWeight: 70
+        - pause: {duration: 20s}
+        - setWeight: 80
+        - pause: {duration: 20s}
+        - setWeight: 90
+        - pause: {duration: 20s}
