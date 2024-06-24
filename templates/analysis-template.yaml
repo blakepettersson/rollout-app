@@ -18,11 +18,9 @@ spec:
               spec:
                 containers:
                   - name: load-tester
-                    image: argoproj/load-tester:latest
-                    command: [sh, -xec]
+                    image: blaaake/vegeta
                     args:
                       - |
-                        wrk -t1 -c1 -d5 -s report.lua http://{{`{{args.service}}.{{args.namespace}}`}}.svc.cluster.local
-                        jq -e '.errors_ratio <= 0.05' report.json
+                        echo 'GET http://{{`{{args.service}}.{{args.namespace}}`}}.svc.cluster.local' | vegeta attack -rate=10 -duration=30s | tee results.bin | vegeta report -type json | jq -e '.success >= 0.95'
                 restartPolicy: Never
             backoffLimit: 0
