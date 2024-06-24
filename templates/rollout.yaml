@@ -28,22 +28,33 @@ spec:
     canary:
       canaryService: {{ .Chart.Name }}-canary
       stableService: {{ .Chart.Name }}-stable
+    analysis:
+      startingStep: 1   # index of step list, of when to start this analysis
+      templates:
+        - templateName: "{{ .Chart.Name }}-success-rate"
+      args:
+        - name: service
+          value: "{{ .Chart.Name }}-canary"
+        - name: namespace
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
       steps:
         - setWeight: 10
-        - pause: {duration: 2s}         # {} pause indefinitely
+        - pause: {duration: 20s}
         - setWeight: 20
-        - pause: {duration: 2s}
+        - pause: {duration: 20s}
         - setWeight: 30
-        - pause: {duration: 2s}
+        - pause: {duration: 20s}
         - setWeight: 40
-        - pause: {duration: 2s}
+        - pause: {duration: 20s}
         - setWeight: 50
-        - pause: {duration: 2s}
+        - pause: {duration: 20s}
         - setWeight: 60
-        - pause: {duration: 2s}
+        - pause: {duration: 20s}
         - setWeight: 70
-        - pause: {duration: 2s}
+        - pause: {duration: 20s}
         - setWeight: 80
-        - pause: {duration: 2s}
+        - pause: {duration: 20s}
         - setWeight: 90
-        - pause: {duration: 2s}
+        - pause: {duration: 20s}
