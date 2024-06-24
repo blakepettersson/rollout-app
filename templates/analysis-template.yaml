@@ -22,6 +22,6 @@ spec:
                     image: blaaake/vegeta
                     args:
                       - |
-                        echo 'GET http://{{`{{args.service}}.{{args.namespace}}`}}.svc.cluster.local' | vegeta attack -rate=10 -duration=30s | tee results.bin | vegeta report -type json | jq -e '.success >= 0.95'
+                        echo 'GET http://{{`{{args.service}}.{{args.namespace}}`}}.svc.cluster.local' | vegeta attack -rate=10 -duration=30s | tee results.bin | vegeta report -type json > results.json && cat results.json && jq -e '.success >= 0.95' results.json'
                 restartPolicy: Never
             backoffLimit: 0
